@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useSessionStore } from '../store/sessionStore'
 import { useStatsStore } from '../store/statsStore'
 import { exerciseMap } from '../data/exercises'
-import { programDayMap } from '../data/program'
+import { getProgramDayMap } from '../data/programs'
 import RestTimer from '../components/RestTimer'
 import { formatDuration } from '../utils/dates'
 import type { ProgramExercise } from '../types'
@@ -29,7 +29,7 @@ export default function SessionView({ onComplete }: Props) {
     )
   }
 
-  const programDay = programDayMap[session.programDayId]
+  const programDay = getProgramDayMap()[session.programDayId]
   const programExercises: ProgramExercise[] = programDay?.exercises ?? []
 
   // ─── Overview ────────────────────────────────────────────────────────────────

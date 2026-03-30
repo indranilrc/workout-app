@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { program } from '../data/program'
+import { getProgram } from '../data/programs'
 import { exerciseMap } from '../data/exercises'
 import { useStatsStore } from '../store/statsStore'
 import { dayOfWeekLabel } from '../utils/dates'
@@ -30,7 +30,7 @@ export default function ProgramView() {
       </div>
 
       {weeks.map(week => {
-        const weekDays = program.filter(d => d.week === week)
+        const weekDays = getProgram().filter(d => d.week === week)
         const isCurrent = week === currentWeek
         const isPast = week < currentWeek
 

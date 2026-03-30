@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useStatsStore } from '../store/statsStore'
 import { useSessionStore } from '../store/sessionStore'
-import { getTodaysProgramDay } from '../data/program'
+import { getTodaysProgramDay } from '../data/programs'
 import { getSessionByDate } from '../db'
 import { todayISO, formatDuration, dayOfWeekLabel } from '../utils/dates'
 import type { ProgramDay, WorkoutSession } from '../types'
@@ -47,7 +47,7 @@ export default function HomeView({ onStartSession }: Props) {
 
   useEffect(() => {
     if (stats.programStartDate) {
-      const day = getTodaysProgramDay(stats.programStartDate, stats.currentProgramWeek)
+      const day = getTodaysProgramDay(stats.currentProgramWeek)
       setTodayDay(day ?? null)
     }
     getSessionByDate(todayISO()).then(s => setTodaySession(s ?? null))
