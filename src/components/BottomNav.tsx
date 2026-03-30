@@ -6,10 +6,11 @@ interface Props {
 }
 
 const items: { id: Tab; label: string; icon: string }[] = [
-  { id: 'home',    label: 'Today',   icon: '🏠' },
-  { id: 'session', label: 'Workout', icon: '💪' },
-  { id: 'history', label: 'History', icon: '📈' },
-  { id: 'program', label: 'Program', icon: '📋' },
+  { id: 'home',     label: 'Today',    icon: '🏠' },
+  { id: 'session',  label: 'Workout',  icon: '💪' },
+  { id: 'history',  label: 'History',  icon: '📈' },
+  { id: 'program',  label: 'Program',  icon: '📋' },
+  { id: 'settings', label: 'Settings', icon: '⚙️' },
 ]
 
 export default function BottomNav({ tab, onChange }: Props) {
