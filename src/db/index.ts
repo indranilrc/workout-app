@@ -6,8 +6,13 @@ import type {
   OverloadState,
 } from '../types'
 
-const DB_NAME = 'workout-app'
 const DB_VERSION = 1
+
+const dbCache: Record<string, Promise<IDBPDatabase<WorkoutDB>>> = {}
+
+function currentUserId(): string {
+  return localStorage.getItem('workout-current-user') ?? 'default'
+}
 
 export type WorkoutDB = {
   sessions: {
@@ -30,17 +35,14 @@ export type WorkoutDB = {
   }
 }
 
-let dbPromise: Promise<IDBPDatabase<WorkoutDB>> | null = null
-
 export function getDB() {
-  if (!dbPromise) {
-    dbPromise = openDB<WorkoutDB>(DB_NAME, DB_VERSION, {
+  const uid = currentUserId()
+  if (!dbCache[uid]) {
+    dbCache[uid] = openDB<WorkoutDB>(`workout-app-${uid}`, DB_VERSION, {
       upgrade(db) {
-        // Sessions store
         const sessionStore = db.createObjectStore('sessions', { keyPath: 'id' })
         sessionStore.createIndex('by-date', 'date')
 
-        // Progress store
         const progressStore = db.createObjectStore('progress', {
           keyPath: 'id',
           autoIncrement: false,
@@ -48,15 +50,12 @@ export function getDB() {
         progressStore.createIndex('by-exercise', 'exerciseId')
         progressStore.createIndex('by-date', 'date')
 
-        // Overload store — keyed by exerciseId
         db.createObjectStore('overload', { keyPath: 'exerciseId' })
-
-        // Stats store — single record keyed by 'main'
         db.createObjectStore('stats', { keyPath: 'id' })
       },
     })
   }
-  return dbPromise
+  return dbCache[uid]
 }
 
 // ─── Sessions ─────────────────────────────────────────────────────────────────
@@ -74,7 +73,7 @@ export async function getSession(id: string): Promise<WorkoutSession | undefined
 export async function getAllSessions(): Promise<WorkoutSession[]> {
   const db = await getDB()
   const sessions = await db.getAllFromIndex('sessions', 'by-date')
-  return sessions.reverse() // newest first
+  return sessions.reverse()
 }
 
 export async function getSessionByDate(date: string): Promise<WorkoutSession | undefined> {
